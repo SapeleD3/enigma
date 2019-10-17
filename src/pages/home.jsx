@@ -3,6 +3,7 @@ import Grid from '@material-ui/core/Grid'
 import axios from 'axios'
 import Scream from '../components/Scream'
 
+
 class home extends Component {
     state = {
         screams: null
@@ -11,7 +12,6 @@ class home extends Component {
     componentDidMount() {
         axios.get(`/screams`)
         .then(res => {
-            console.log('here',res.data)
             this.setState({
                 screams: res.data
             })
@@ -36,5 +36,6 @@ class home extends Component {
         )
     }
 }
+
 
 export default home

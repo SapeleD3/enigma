@@ -2,6 +2,7 @@ import React from "react";
 import "./App.css";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import AuthRoute from './util/AuthRoute'
+import history from './history'
 
 //Redux
 import {Provider} from 'react-redux'
@@ -22,20 +23,23 @@ import Axios from "axios";
 const theme = createMuiTheme(Theme);
 
 
-const token = localStorage.FBIdToken;
-if(token){
-  const decodedToken = jwtDecode(token)
-  if(decodedToken.exp * 1000 < Date.now()){
-    store.dispatch(logoutUser)
-    window.location.href = '/login'  } 
-    else {
-    store.dispatch({type: SET_AUTHENTICATED})
-    Axios.defaults.headers.common['Authorization'] = token
-    store.dispatch(getUserData());
-  }
-}
-
 function App() {
+    const token = localStorage.FBIdToken;
+    if(token){
+    const decodedToken = jwtDecode(token)
+    if(decodedToken.exp * 1000 < Date.now()){
+      console.log('1', new Date(decodedToken.exp * 1000))
+      console.log('2', decodedToken.exp * 1000 < Date.now())
+      store.dispatch(logoutUser)
+      history.push('/login')  
+    } 
+      else {
+      console.log('i got here')
+      store.dispatch({type: SET_AUTHENTICATED})
+      Axios.defaults.headers.common['Authorization'] = token
+      store.dispatch(getUserData());
+    }
+}
   return (
       <ThemeProvider theme={theme}>
         <Provider store={store}>
@@ -43,9 +47,9 @@ function App() {
           <Navbar />
           <div className="container">
             <Switch>
-              <AuthRoute path="/" exact component={home} />
+              <Route path="/" exact component={home} />
               <AuthRoute path="/login" exact component={login} />
-              <Route path="/signup" exact component={signUp}/>
+              <AuthRoute path="/signup" exact component={signUp}/>
             </Switch>
           </div>
         </Router>
